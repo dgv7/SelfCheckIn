@@ -1,5 +1,5 @@
 import UIKit
 
 func topCategory() {
-    print("탑")
+    print("시작합니다.")
 }
