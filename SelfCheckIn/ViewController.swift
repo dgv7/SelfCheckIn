@@ -11,9 +11,11 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        topCategory()
+        roomList()
+        roomDetail()
+        priceCheckout()
     }
-
 
 }
 
