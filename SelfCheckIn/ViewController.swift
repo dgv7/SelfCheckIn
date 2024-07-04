@@ -22,6 +22,10 @@
 import UIKit
 
 class ViewController: UIViewController {
+    let startDatePicker = UIDatePicker()
+    let endDatePicker = UIDatePicker()
+    var dateButton: UIButton?
+    var verticalStackView2: UIStackView!
     
     let rooms = [
         ("singleRoomImage", "Classic Single Room", "1박 130,300원 ~"),
@@ -31,7 +35,8 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.title = "객실리스트"
+        setupStackView()
         view.backgroundColor = .white
         
         let mainStackView = UIStackView()
@@ -43,7 +48,7 @@ class ViewController: UIViewController {
         view.addSubview(mainStackView)
         
         NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            mainStackView.topAnchor.constraint(equalTo: verticalStackView2.bottomAnchor, constant: 20),
             mainStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             mainStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10)
         ])
@@ -54,6 +59,124 @@ class ViewController: UIViewController {
         }
     }
     
+    // 카테고리 버튼, 날짜선택, 인원선택
+    func setupStackView(){
+        let datePerson: [[(String, UIColor)]] = [
+            [("기간선택", .lightGray),("0명", .lightGray)]
+        ]
+        
+        let buttonData: [[(String, UIColor)]] = [
+            [("스탠다드", .lightGray),("디럭스", .lightGray),("스위트", .lightGray),("패밀리", .lightGray)]
+        ]
+        let stackViews1 = datePerson.map{
+            makeHorizontalStackView(buttonInfo: $0)
+        }
+        let stackViews2 = buttonData.map{
+            makeHorizontalStackView(buttonInfo: $0)
+        }
+        let verticalStackView1 = makeVerticalStackView(stackViews1)
+        self.verticalStackView2 = makeVerticalStackView(stackViews2)
+        
+        view.addSubview(verticalStackView1)
+        view.addSubview(verticalStackView2)
+        NSLayoutConstraint.activate([
+            verticalStackView1.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            verticalStackView1.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
+            verticalStackView1.widthAnchor.constraint(equalToConstant: 350)
+        ])
+        NSLayoutConstraint.activate([
+            verticalStackView2.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            verticalStackView2.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
+            verticalStackView2.widthAnchor.constraint(equalToConstant: 350)
+        ])
+        
+    }
+    func makeVerticalStackView(_ views: [UIView]) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: views)
+        stackView.axis = .vertical
+        stackView.spacing = 10
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
+    
+    func makeHorizontalStackView(buttonInfo: [(String, UIColor)]) -> UIStackView {
+        let buttons = buttonInfo.map{
+            makeButton(title: $0.0, backgroundColor: $0.1)
+        }
+        let stackView = UIStackView(arrangedSubviews: buttons)
+        stackView.axis = .horizontal
+        stackView.spacing = 10
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }
+    
+    func makeButton(title: String, backgroundColor: UIColor) -> UIButton{
+        let button = UIButton()
+        button.setTitle(title, for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 10)
+        button.backgroundColor = backgroundColor
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 20
+        
+        if title == "기간선택" {
+            dateButton = button
+        }
+        
+        NSLayoutConstraint.activate([
+            button.heightAnchor.constraint(equalToConstant: 40),
+            button.widthAnchor.constraint(equalToConstant: 80)
+        ])
+        return button
+    }
+    @objc
+    func buttonTapped(sender: UIButton){
+        guard let buttonText = sender.currentTitle else {return}
+        if buttonText == "기간선택"{
+            showDatePicker()
+        }
+    }
+    func showDatePicker() {
+        startDatePicker.datePickerMode = .date
+        startDatePicker.preferredDatePickerStyle = .automatic
+        endDatePicker.datePickerMode = .date
+        endDatePicker.preferredDatePickerStyle = .automatic
+        
+        let alert = UIAlertController(title: "기간을 선택하세요", message: nil, preferredStyle: .actionSheet)
+        let stackView = UIStackView(arrangedSubviews: [startDatePicker, endDatePicker])
+        stackView.axis = .vertical
+        stackView.spacing = 10
+        alert.view.addSubview(stackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            stackView.leadingAnchor.constraint(equalTo: alert.view.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: alert.view.trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: alert.view.topAnchor, constant: 20),
+            stackView.bottomAnchor.constraint(equalTo: alert.view.bottomAnchor, constant: -150)
+        ])
+        let selectAction = UIAlertAction(title: "날짜선택", style: .default) { _ in
+            let startDate = self.startDatePicker.date
+            let endDate = self.endDatePicker.date
+            let dateFormatter = DateFormatter()
+            dateFormatter.locale = Locale(identifier: "ko_KR")
+            dateFormatter.dateStyle = .medium
+            let startDateString = dateFormatter.string(from: startDate)
+            let endDateString = dateFormatter.string(from: endDate)
+            let dateRangeString = "\(startDateString) ~ \(endDateString)"
+            print("Selected date range: \(dateRangeString)")
+            self.dateButton?.setTitle(dateRangeString, for: .normal)
+        }
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        
+        alert.addAction(selectAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    //객실 리스트
     func createRoomStackView(imageName: String, roomName: String, price: String) -> UIStackView {
         let roomImageView = UIImageView()
         roomImageView.translatesAutoresizingMaskIntoConstraints = false
