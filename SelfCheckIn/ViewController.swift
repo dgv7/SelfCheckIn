@@ -79,19 +79,19 @@ class ViewController: UIViewController {
         let stackViews2 = buttonData.map{
             makeHorizontalStackView(buttonInfo: $0)
         }
-        let verticalStackView1 = makeVerticalStackView(stackViews1)
+//        let verticalStackView1 = makeVerticalStackView(stackViews1)
         self.verticalStackView2 = makeVerticalStackView(stackViews2)
         
-        view.addSubview(verticalStackView1)
+//        view.addSubview(verticalStackView1)
         view.addSubview(verticalStackView2)
-        NSLayoutConstraint.activate([
-            verticalStackView1.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            verticalStackView1.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-            verticalStackView1.widthAnchor.constraint(equalToConstant: 350)
-        ])
+//        NSLayoutConstraint.activate([
+//            verticalStackView1.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+//            verticalStackView1.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
+//            verticalStackView1.widthAnchor.constraint(equalToConstant: 350)
+//        ])
         NSLayoutConstraint.activate([
             verticalStackView2.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            verticalStackView2.topAnchor.constraint(equalTo: verticalStackView1.bottomAnchor, constant: 10),
+            verticalStackView2.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
             verticalStackView2.widthAnchor.constraint(equalToConstant: 350)
         ])
     }
@@ -138,10 +138,12 @@ class ViewController: UIViewController {
     }
     
     @objc func buttonTapped(sender: UIButton){
-        guard let buttonText = sender.currentTitle else {return}
-        if buttonText == "기간선택"{
-            showDatePicker()
+        if sender.backgroundColor == .lightGray{
+            sender.backgroundColor = .blue
+        } else {
+            sender.backgroundColor = .lightGray
         }
+    
     }
     
     func showDatePicker() {
@@ -303,7 +305,6 @@ class ViewController: UIViewController {
             paymentButton.centerXAnchor.constraint(equalTo: detailView.centerXAnchor),
             paymentButton.widthAnchor.constraint(equalToConstant: 100),
             paymentButton.heightAnchor.constraint(equalToConstant: 50),
-            paymentButton.bottomAnchor.constraint(equalTo: detailView.bottomAnchor, constant: -20)
         ])
         
         return detailView
