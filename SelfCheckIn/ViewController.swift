@@ -30,6 +30,7 @@ class ViewController: UIViewController {
     ]
     
     var selectedCategories: [String] = []
+    var selectedRoomStackView: UIStackView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,6 +74,16 @@ class ViewController: UIViewController {
         
         let detailView = createDetailView()
         contentStackView.addArrangedSubview(detailView)
+        
+        // "스탠다드" 버튼을 찾아서 배경색을 변경합니다.
+        for case let button as UIButton in verticalStackView2.arrangedSubviews[0].subviews {
+            if button.title(for: .normal) == "스탠다드" {
+                button.backgroundColor = .blue
+            }
+        }
+        
+        // 초기 로드 시 "스탠다드" 방 목록을 로드합니다.
+        updateRoomList()
     }
     
     // 카테고리 버튼, 날짜선택, 인원선택
@@ -222,6 +233,14 @@ class ViewController: UIViewController {
     @objc func roomTapped(sender: UITapGestureRecognizer) {
         guard let stackView = sender.view as? UIStackView,
               let roomNameLabel = stackView.arrangedSubviews.last?.subviews.first as? UILabel else { return }
+        
+        // 선택된 객실 강조 표시 및 선택 해제 처리
+        if let selectedStackView = selectedRoomStackView {
+            selectedStackView.backgroundColor = .clear // 이전 선택 해제
+        }
+        
+        stackView.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3) // 현재 선택 강조
+        selectedRoomStackView = stackView
         
         let roomName = roomNameLabel.text ?? ""
         updateDetailView(for: roomName)
