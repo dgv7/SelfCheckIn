@@ -11,19 +11,19 @@ class ViewController: UIViewController {
         ("queenRoomImage", "Standard Queen Room", "1박 130,300원 ~"),
     ]
     let rooms2 = [
-        ("singleRoomImage", "Deluxe Single Room", "1박 130,300원 ~"),
-        ("doubleRoomImage", "Deluxe Double Room", "1박 130,300원 ~"),
-        ("queenRoomImage", "Deluxe Queen Room", "1박 130,300원 ~"),
+        ("singleRoomImage", "Deluxe Single Room", "1박 160,300원 ~"),
+        ("doubleRoomImage", "Deluxe Double Room", "1박 160,300원 ~"),
+        ("queenRoomImage", "Deluxe Queen Room", "1박 160,300원 ~"),
     ]
     let rooms3 = [
-        ("singleRoomImage", "Sweet Single Room", "1박 130,300원 ~"),
-        ("doubleRoomImage", "Sweet Double Room", "1박 130,300원 ~"),
-        ("queenRoomImage", "Sweet Queen Room", "1박 130,300원 ~"),
+        ("singleRoomImage", "Sweet Single Room", "1박 190,300원 ~"),
+        ("doubleRoomImage", "Sweet Double Room", "1박 190,300원 ~"),
+        ("queenRoomImage", "Sweet Queen Room", "1박 190,300원 ~"),
     ]
     let rooms4 = [
-        ("singleRoomImage", "Family Single Room", "1박 130,300원 ~"),
-        ("doubleRoomImage", "Family Double Room", "1박 130,300원 ~"),
-        ("queenRoomImage", "Family Queen Room", "1박 130,300원 ~"),
+        ("singleRoomImage", "Family Single Room", "1박 240,300원 ~"),
+        ("doubleRoomImage", "Family Double Room", "1박 240,300원 ~"),
+        ("queenRoomImage", "Family Queen Room", "1박 240,300원 ~"),
     ]
     
     override func viewDidLoad() {
