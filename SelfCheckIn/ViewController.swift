@@ -211,37 +211,51 @@ class ViewController: UIViewController {
         return horizontalStackView
     }
     
+    
+    
     // 객실 상세
     func createDetailView() -> UIView {
+        
+        
         let detailView = UIView()
         
+        let detailStackView = UIStackView()
+        detailStackView.axis = .vertical
+        detailStackView.spacing = 10
+        detailStackView.alignment = .fill
+        detailStackView.translatesAutoresizingMaskIntoConstraints = false
+        detailStackView.isHidden = false
+        
+        detailView.addSubview(detailStackView)
+        
+                
         // Image View
         let imageView = UIImageView()
         imageView.image = UIImage(named: "doubleRoomImage")
         imageView.contentMode = .scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        detailView.addSubview(imageView)
+        detailStackView.addSubview(imageView)
         
         // Room Info Label
         let roomInfoLabel = UILabel()
         roomInfoLabel.text = "객실명\n기준 2인 / 최대 4인\n더블 침대 1개\n금연객실\n40㎡\n스파르타 전망"
         roomInfoLabel.numberOfLines = 0
         roomInfoLabel.translatesAutoresizingMaskIntoConstraints = false
-        detailView.addSubview(roomInfoLabel)
+        detailStackView.addSubview(roomInfoLabel)
         
         // Service Info Label
         let serviceInfoLabel = UILabel()
         serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
         serviceInfoLabel.numberOfLines = 0
         serviceInfoLabel.translatesAutoresizingMaskIntoConstraints = false
-        detailView.addSubview(serviceInfoLabel)
+        detailStackView.addSubview(serviceInfoLabel)
         
         // Price Label
         let priceLabel = UILabel()
         priceLabel.text = "34% 726,000원\n472,200원"
         priceLabel.numberOfLines = 0
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
-        detailView.addSubview(priceLabel)
+        detailStackView.addSubview(priceLabel)
         
         // Payment Button
         let paymentButton = UIButton(type: .system)
@@ -249,7 +263,7 @@ class ViewController: UIViewController {
         paymentButton.titleLabel?.font = UIFont.systemFont(ofSize: 18)
         paymentButton.backgroundColor = .lightGray
         paymentButton.translatesAutoresizingMaskIntoConstraints = false
-        detailView.addSubview(paymentButton)
+        detailStackView.addSubview(paymentButton)
         
         // Constraints
         NSLayoutConstraint.activate([
