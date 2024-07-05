@@ -265,7 +265,7 @@ class ViewController: UIViewController {
     
     func createDetailStackView(for roomName: String) -> UIStackView {
         let detailStackView = UIStackView()
-        detailStackView.axis = .horizontal
+        detailStackView.axis = .vertical
         detailStackView.spacing = 10
         detailStackView.alignment = .fill
         detailStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -287,74 +287,60 @@ class ViewController: UIViewController {
         
         let roomInfoLabel = UILabel()
         let serviceInfoLabel = UILabel()
-        let priceLabel = UILabel()
         
         switch roomName {
         case "Standard Single Room":
             imageView.image = UIImage(named: "singleRoomImage")
             roomInfoLabel.text = "Standard Single Room\n기준 1인 / 최대 2인\n싱글 침대 1개\n금연객실\n20㎡"
             serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
-            priceLabel.text = "1박 130,300원"
         case "Standard Double Room":
             imageView.image = UIImage(named: "doubleRoomImage")
             roomInfoLabel.text = "Standard Double Room\n기준 2인 / 최대 3인\n더블 침대 1개\n금연객실\n25㎡"
             serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
-            priceLabel.text = "1박 130,300원"
         case "Standard Queen Room":
             imageView.image = UIImage(named: "queenRoomImage")
             roomInfoLabel.text = "Standard Queen Room\n기준 2인 / 최대 3인\n퀸 침대 1개\n금연객실\n30㎡"
             serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
-            priceLabel.text = "1박 130,300원"
         case "Deluxe Single Room":
             imageView.image = UIImage(named: "singleRoomImage")
             roomInfoLabel.text = "Deluxe Single Room\n기준 1인 / 최대 2인\n싱글 침대 1개\n금연객실\n20㎡"
             serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
-            priceLabel.text = "1박 160,300원"
         case "Deluxe Double Room":
             imageView.image = UIImage(named: "doubleRoomImage")
             roomInfoLabel.text = "Deluxe Double Room\n기준 2인 / 최대 3인\n더블 침대 1개\n금연객실\n25㎡"
             serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
-            priceLabel.text = "1박 160,300원"
         case "Deluxe Queen Room":
             imageView.image = UIImage(named: "queenRoomImage")
             roomInfoLabel.text = "Deluxe Queen Room\n기준 2인 / 최대 3인\n퀸 침대 1개\n금연객실\n30㎡"
             serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
-            priceLabel.text = "1박 160,300원"
         case "Sweet Single Room":
             imageView.image = UIImage(named: "singleRoomImage")
             roomInfoLabel.text = "Sweet Single Room\n기준 1인 / 최대 2인\n싱글 침대 1개\n금연객실\n20㎡"
             serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
-            priceLabel.text = "1박 190,300원"
         case "Sweet Double Room":
             imageView.image = UIImage(named: "doubleRoomImage")
             roomInfoLabel.text = "Sweet Double Room\n기준 2인 / 최대 3인\n더블 침대 1개\n금연객실\n25㎡"
             serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
-            priceLabel.text = "1박 190,300원"
         case "Sweet Queen Room":
             imageView.image = UIImage(named: "queenRoomImage")
             roomInfoLabel.text = "Sweet Queen Room\n기준 2인 / 최대 3인\n퀸 침대 1개\n금연객실\n30㎡"
             serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
-            priceLabel.text = "1박 190,300원"
         case "Family Single Room":
             imageView.image = UIImage(named: "singleRoomImage")
             roomInfoLabel.text = "Family Single Room\n기준 1인 / 최대 2인\n싱글 침대 1개\n금연객실\n20㎡"
             serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
-            priceLabel.text = "1박 240,300원"
         case "Family Double Room":
             imageView.image = UIImage(named: "doubleRoomImage")
             roomInfoLabel.text = "Family Double Room\n기준 2인 / 최대 3인\n더블 침대 1개\n금연객실\n25㎡"
             serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
-            priceLabel.text = "1박 240,300원"
         case "Family Queen Room":
             imageView.image = UIImage(named: "queenRoomImage")
             roomInfoLabel.text = "Family Queen Room\n기준 2인 / 최대 3인\n퀸 침대 1개\n금연객실\n30㎡"
             serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
-            priceLabel.text = "1박 240,300원"
         default:
             imageView.image = nil
             roomInfoLabel.text = ""
             serviceInfoLabel.text = ""
-            priceLabel.text = ""
         }
         
         roomInfoLabel.numberOfLines = 0
@@ -363,26 +349,68 @@ class ViewController: UIViewController {
         serviceInfoLabel.numberOfLines = 0
         serviceInfoLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        priceLabel.numberOfLines = 0
+        infoStackView.addArrangedSubview(roomInfoLabel)
+        infoStackView.addArrangedSubview(serviceInfoLabel)
+        
+        detailStackView.addArrangedSubview(imageView)
+        detailStackView.addArrangedSubview(infoStackView)
+        
+        // 결제 버튼과 가격을 포함하는 horizontalStackView 추가
+        let paymentStackView = UIStackView()
+        paymentStackView.axis = .horizontal
+        paymentStackView.spacing = 10
+        paymentStackView.alignment = .fill
+        paymentStackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let priceLabel = UILabel()
+        priceLabel.font = UIFont.boldSystemFont(ofSize: 20)
+        priceLabel.textColor = .black
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        switch roomName {
+        case "Standard Single Room":
+            priceLabel.text = "1박 130,300원"
+        case "Standard Double Room":
+            priceLabel.text = "1박 130,300원"
+        case "Standard Queen Room":
+            priceLabel.text = "1박 130,300원"
+        case "Deluxe Single Room":
+            priceLabel.text = "1박 160,300원"
+        case "Deluxe Double Room":
+            priceLabel.text = "1박 160,300원"
+        case "Deluxe Queen Room":
+            priceLabel.text = "1박 160,300원"
+        case "Sweet Single Room":
+            priceLabel.text = "1박 190,300원"
+        case "Sweet Double Room":
+            priceLabel.text = "1박 190,300원"
+        case "Sweet Queen Room":
+            priceLabel.text = "1박 190,300원"
+        case "Family Single Room":
+            priceLabel.text = "1박 240,300원"
+        case "Family Double Room":
+            priceLabel.text = "1박 240,300원"
+        case "Family Queen Room":
+            priceLabel.text = "1박 240,300원"
+        default:
+            priceLabel.text = ""
+        }
         
         let paymentButton = UIButton(type: .system)
         paymentButton.setTitle("결제하기", for: .normal)
         paymentButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
         paymentButton.backgroundColor = .white
         paymentButton.translatesAutoresizingMaskIntoConstraints = false
+        paymentButton.addTarget(self, action: #selector(paymentButtonTapped), for: .touchUpInside)
+                detailStackView.addArrangedSubview(paymentButton)
         
-        infoStackView.addArrangedSubview(roomInfoLabel)
-        infoStackView.addArrangedSubview(serviceInfoLabel)
-        infoStackView.addArrangedSubview(priceLabel)
-        infoStackView.addArrangedSubview(paymentButton)
+        paymentStackView.addArrangedSubview(priceLabel)
+        paymentStackView.addArrangedSubview(paymentButton)
         
-        detailStackView.addArrangedSubview(imageView)
-        detailStackView.addArrangedSubview(infoStackView)
+        detailStackView.addArrangedSubview(paymentStackView)
         
         return detailStackView
     }
-  
     
     // 객실 상세
     func createDetailView() -> UIView {
@@ -390,4 +418,10 @@ class ViewController: UIViewController {
         detailView.translatesAutoresizingMaskIntoConstraints = false
         return detailView
     }
+    
+    @objc func paymentButtonTapped() {
+          let alert = UIAlertController(title: "결제", message: "결제가 완료되었습니다!", preferredStyle: .alert)
+          alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+          present(alert, animated: true, completion: nil)
+        }
 }
