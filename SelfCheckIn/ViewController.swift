@@ -5,10 +5,25 @@ class ViewController: UIViewController {
     let endDatePicker = UIDatePicker()
     var dateButton: UIButton?
     var verticalStackView2: UIStackView!
-    let rooms = [
-        ("singleRoomImage", "Classic Single Room", "1박 130,300원 ~"),
+    let rooms1 = [
+        ("singleRoomImage", "Standard Single Room", "1박 130,300원 ~"),
+        ("doubleRoomImage", "Standard Double Room", "1박 130,300원 ~"),
+        ("queenRoomImage", "Standard Queen Room", "1박 130,300원 ~"),
+    ]
+    let rooms2 = [
+        ("singleRoomImage", "Deluxe Single Room", "1박 130,300원 ~"),
         ("doubleRoomImage", "Deluxe Double Room", "1박 130,300원 ~"),
-        ("queenRoomImage", "Noblesse Queen Room", "1박 130,300원 ~")
+        ("queenRoomImage", "Deluxe Queen Room", "1박 130,300원 ~"),
+    ]
+    let rooms3 = [
+        ("singleRoomImage", "Sweet Single Room", "1박 130,300원 ~"),
+        ("doubleRoomImage", "Sweet Double Room", "1박 130,300원 ~"),
+        ("queenRoomImage", "Sweet Queen Room", "1박 130,300원 ~"),
+    ]
+    let rooms4 = [
+        ("singleRoomImage", "Family Single Room", "1박 130,300원 ~"),
+        ("doubleRoomImage", "Family Double Room", "1박 130,300원 ~"),
+        ("queenRoomImage", "Family Queen Room", "1박 130,300원 ~"),
     ]
     
     override func viewDidLoad() {
@@ -40,7 +55,7 @@ class ViewController: UIViewController {
         
         contentStackView.addArrangedSubview(mainStackView)
         
-        for room in rooms {
+        for room in rooms1 {
             let roomStackView = createRoomStackView(imageName: room.0, roomName: room.1, price: room.2)
             mainStackView.addArrangedSubview(roomStackView)
         }
