@@ -66,16 +66,16 @@ class ViewController: UIViewController {
     
     // 카테고리 버튼, 날짜선택, 인원선택
     func setupStackView(){
-        let datePerson: [[(String, UIColor)]] = [
-            [("기간선택", .lightGray),("0명", .lightGray)]
-        ]
+//        let datePerson: [[(String, UIColor)]] = [
+//            [("기간선택", .lightGray),("0명", .lightGray)]
+//        ]
         
         let buttonData: [[(String, UIColor)]] = [
             [("스탠다드", .lightGray),("디럭스", .lightGray),("스위트", .lightGray),("패밀리", .lightGray)]
         ]
-        let stackViews1 = datePerson.map{
-            makeHorizontalStackView(buttonInfo: $0)
-        }
+//        let stackViews1 = datePerson.map{
+//            makeHorizontalStackView(buttonInfo: $0)
+//        }
         let stackViews2 = buttonData.map{
             makeHorizontalStackView(buttonInfo: $0)
         }
