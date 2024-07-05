@@ -73,6 +73,17 @@ class ViewController: UIViewController {
         
         let detailView = createDetailView()
         contentStackView.addArrangedSubview(detailView)
+        
+        // 초기 선택된 카테고리 설정
+        selectedCategories.append("스탠다드")
+        // "스탠다드" 버튼을 찾아서 배경색을 변경합니다.
+        for case let button as UIButton in verticalStackView2.arrangedSubviews[0].subviews {
+            if button.title(for: .normal) == "스탠다드" {
+                button.backgroundColor = .blue
+            }
+        }
+        // 초기 로드 시 "스탠다드" 방 목록을 로드합니다.
+        updateRoomList()
     }
     
     // 카테고리 버튼, 날짜선택, 인원선택
@@ -347,8 +358,8 @@ class ViewController: UIViewController {
         
         let paymentButton = UIButton(type: .system)
         paymentButton.setTitle("결제하기", for: .normal)
-        paymentButton.titleLabel?.font = UIFont.systemFont(ofSize: 18)
-        paymentButton.backgroundColor = .lightGray
+        paymentButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
+        paymentButton.backgroundColor = .white
         paymentButton.translatesAutoresizingMaskIntoConstraints = false
         
         infoStackView.addArrangedSubview(roomInfoLabel)
@@ -361,6 +372,7 @@ class ViewController: UIViewController {
         
         return detailStackView
     }
+  
     
     // 객실 상세
     func createDetailView() -> UIView {
