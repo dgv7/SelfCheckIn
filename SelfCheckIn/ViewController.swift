@@ -5,6 +5,9 @@ class ViewController: UIViewController {
     let endDatePicker = UIDatePicker()
     var dateButton: UIButton?
     var verticalStackView2: UIStackView!
+    var contentStackView: UIStackView!
+    var mainStackView: UIStackView!
+    
     let rooms1 = [
         ("singleRoomImage", "Standard Single Room", "1박 130,300원 ~"),
         ("doubleRoomImage", "Standard Double Room", "1박 130,300원 ~"),
@@ -26,28 +29,41 @@ class ViewController: UIViewController {
         ("queenRoomImage", "Family Queen Room", "1박 240,300원 ~"),
     ]
     
+    var selectedCategories: [String] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "객실리스트"
         setupStackView()
         view.backgroundColor = .white
         
-        let contentStackView = UIStackView()
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(scrollView)
+        
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: verticalStackView2.bottomAnchor, constant: 20),
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
+        ])
+        
+        contentStackView = UIStackView()
         contentStackView.axis = .vertical
         contentStackView.spacing = 20
         contentStackView.alignment = .fill
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(contentStackView)
+        scrollView.addSubview(contentStackView)
         
         NSLayoutConstraint.activate([
-            contentStackView.topAnchor.constraint(equalTo: verticalStackView2.bottomAnchor, constant: 20),
-            contentStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            contentStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            contentStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
+            contentStackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentStackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
         
-        let mainStackView = UIStackView()
+        mainStackView = UIStackView()
         mainStackView.axis = .vertical
         mainStackView.spacing = 10
         mainStackView.alignment = .fill
@@ -55,40 +71,23 @@ class ViewController: UIViewController {
         
         contentStackView.addArrangedSubview(mainStackView)
         
-        for room in rooms1 {
-            let roomStackView = createRoomStackView(imageName: room.0, roomName: room.1, price: room.2)
-            mainStackView.addArrangedSubview(roomStackView)
-        }
-        
         let detailView = createDetailView()
         contentStackView.addArrangedSubview(detailView)
     }
     
     // 카테고리 버튼, 날짜선택, 인원선택
-    func setupStackView(){
-//        let datePerson: [[(String, UIColor)]] = [
-//            [("기간선택", .lightGray),("0명", .lightGray)]
-//        ]
-        
+    func setupStackView() {
         let buttonData: [[(String, UIColor)]] = [
             [("스탠다드", .lightGray),("디럭스", .lightGray),("스위트", .lightGray),("패밀리", .lightGray)]
         ]
-//        let stackViews1 = datePerson.map{
-//            makeHorizontalStackView(buttonInfo: $0)
-//        }
-        let stackViews2 = buttonData.map{
+        
+        let stackViews2 = buttonData.map {
             makeHorizontalStackView(buttonInfo: $0)
         }
-//        let verticalStackView1 = makeVerticalStackView(stackViews1)
         self.verticalStackView2 = makeVerticalStackView(stackViews2)
         
-//        view.addSubview(verticalStackView1)
         view.addSubview(verticalStackView2)
-//        NSLayoutConstraint.activate([
-//            verticalStackView1.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-//            verticalStackView1.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-//            verticalStackView1.widthAnchor.constraint(equalToConstant: 350)
-//        ])
+        
         NSLayoutConstraint.activate([
             verticalStackView2.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             verticalStackView2.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
@@ -106,7 +105,7 @@ class ViewController: UIViewController {
     }
     
     func makeHorizontalStackView(buttonInfo: [(String, UIColor)]) -> UIStackView {
-        let buttons = buttonInfo.map{
+        let buttons = buttonInfo.map {
             makeButton(title: $0.0, backgroundColor: $0.1)
         }
         let stackView = UIStackView(arrangedSubviews: buttons)
@@ -117,7 +116,7 @@ class ViewController: UIViewController {
         return stackView
     }
     
-    func makeButton(title: String, backgroundColor: UIColor) -> UIButton{
+    func makeButton(title: String, backgroundColor: UIColor) -> UIButton {
         let button = UIButton()
         button.setTitle(title, for: .normal)
         button.titleLabel?.font = .boldSystemFont(ofSize: 10)
@@ -126,10 +125,6 @@ class ViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 20
         
-        if title == "기간선택" {
-            dateButton = button
-        }
-        
         NSLayoutConstraint.activate([
             button.heightAnchor.constraint(equalToConstant: 40),
             button.widthAnchor.constraint(equalToConstant: 80)
@@ -137,54 +132,46 @@ class ViewController: UIViewController {
         return button
     }
     
-    @objc func buttonTapped(sender: UIButton){
-        if sender.backgroundColor == .lightGray{
+    @objc func buttonTapped(sender: UIButton) {
+        guard let title = sender.title(for: .normal) else { return }
+        
+        if sender.backgroundColor == .lightGray {
             sender.backgroundColor = .blue
+            selectedCategories.append(title)
         } else {
             sender.backgroundColor = .lightGray
+            if let index = selectedCategories.firstIndex(of: title) {
+                selectedCategories.remove(at: index)
+            }
         }
-    
+        updateRoomList()
     }
     
-    func showDatePicker() {
-        startDatePicker.datePickerMode = .date
-        startDatePicker.preferredDatePickerStyle = .automatic
-        endDatePicker.datePickerMode = .date
-        endDatePicker.preferredDatePickerStyle = .automatic
+    func updateRoomList() {
+        mainStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
-        let alert = UIAlertController(title: "기간을 선택하세요", message: nil, preferredStyle: .actionSheet)
-        let stackView = UIStackView(arrangedSubviews: [startDatePicker, endDatePicker])
-        stackView.axis = .vertical
-        stackView.spacing = 10
-        alert.view.addSubview(stackView)
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: alert.view.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: alert.view.trailingAnchor),
-            stackView.topAnchor.constraint(equalTo: alert.view.topAnchor, constant: 20),
-            stackView.bottomAnchor.constraint(equalTo: alert.view.bottomAnchor, constant: -150)
-        ])
-        let selectAction = UIAlertAction(title: "날짜선택", style: .default) { _ in
-            let startDate = self.startDatePicker.date
-            let endDate = self.endDatePicker.date
-            let dateFormatter = DateFormatter()
-            dateFormatter.locale = Locale(identifier: "ko_KR")
-            dateFormatter.dateStyle = .medium
-            let startDateString = dateFormatter.string(from: startDate)
-            let endDateString = dateFormatter.string(from: endDate)
-            let dateRangeString = "\(startDateString) ~ \(endDateString)"
-            print("Selected date range: \(dateRangeString)")
-            self.dateButton?.setTitle(dateRangeString, for: .normal)
+        for category in selectedCategories {
+            var rooms: [(String, String, String)] = []
+            switch category {
+            case "스탠다드":
+                rooms = rooms1
+            case "디럭스":
+                rooms = rooms2
+            case "스위트":
+                rooms = rooms3
+            case "패밀리":
+                rooms = rooms4
+            default:
+                break
+            }
+            
+            for room in rooms {
+                let roomStackView = createRoomStackView(imageName: room.0, roomName: room.1, price: room.2)
+                mainStackView.addArrangedSubview(roomStackView)
+            }
         }
-        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-        
-        alert.addAction(selectAction)
-        alert.addAction(cancelAction)
-        
-        present(alert, animated: true, completion: nil)
     }
     
-    // 객실 리스트
     func createRoomStackView(imageName: String, roomName: String, price: String) -> UIStackView {
         let roomImageView = UIImageView()
         roomImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -225,88 +212,160 @@ class ViewController: UIViewController {
         horizontalStackView.addArrangedSubview(roomImageView)
         horizontalStackView.addArrangedSubview(verticalStackView)
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(roomTapped))
+        horizontalStackView.addGestureRecognizer(tapGesture)
+        horizontalStackView.isUserInteractionEnabled = true
+        
         return horizontalStackView
     }
     
+    @objc func roomTapped(sender: UITapGestureRecognizer) {
+        guard let stackView = sender.view as? UIStackView,
+              let roomNameLabel = stackView.arrangedSubviews.last?.subviews.first as? UILabel else { return }
+        
+        let roomName = roomNameLabel.text ?? ""
+        updateDetailView(for: roomName)
+    }
     
+    func updateDetailView(for roomName: String) {
+        let detailView = contentStackView.arrangedSubviews.last!
+        detailView.subviews.forEach { $0.removeFromSuperview() }
+        
+        let detailStackView = createDetailStackView(for: roomName)
+        detailView.addSubview(detailStackView)
+        
+        NSLayoutConstraint.activate([
+            detailStackView.topAnchor.constraint(equalTo: detailView.topAnchor, constant: 20),
+            detailStackView.leadingAnchor.constraint(equalTo: detailView.leadingAnchor, constant: 20),
+            detailStackView.trailingAnchor.constraint(equalTo: detailView.trailingAnchor, constant: -20),
+            detailStackView.bottomAnchor.constraint(equalTo: detailView.bottomAnchor, constant: -20)
+        ])
+    }
     
-    // 객실 상세
-    func createDetailView() -> UIView {
-        
-        
-        let detailView = UIView()
-        
+    func createDetailStackView(for roomName: String) -> UIStackView {
         let detailStackView = UIStackView()
-        detailStackView.axis = .vertical
+        detailStackView.axis = .horizontal
         detailStackView.spacing = 10
         detailStackView.alignment = .fill
         detailStackView.translatesAutoresizingMaskIntoConstraints = false
-        detailStackView.isHidden = false
         
-        detailView.addSubview(detailStackView)
-        
-                
-        // Image View
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "doubleRoomImage")
         imageView.contentMode = .scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        detailStackView.addSubview(imageView)
+        imageView.clipsToBounds = true
+        NSLayoutConstraint.activate([
+            imageView.widthAnchor.constraint(equalToConstant: 140),
+            imageView.heightAnchor.constraint(equalToConstant: 200)
+        ])
         
-        // Room Info Label
+        let infoStackView = UIStackView()
+        infoStackView.axis = .vertical
+        infoStackView.spacing = 10
+        infoStackView.alignment = .fill
+        infoStackView.translatesAutoresizingMaskIntoConstraints = false
+        
         let roomInfoLabel = UILabel()
-        roomInfoLabel.text = "객실명\n기준 2인 / 최대 4인\n더블 침대 1개\n금연객실\n40㎡\n스파르타 전망"
+        let serviceInfoLabel = UILabel()
+        let priceLabel = UILabel()
+        
+        switch roomName {
+        case "Standard Single Room":
+            imageView.image = UIImage(named: "singleRoomImage")
+            roomInfoLabel.text = "Standard Single Room\n기준 1인 / 최대 2인\n싱글 침대 1개\n금연객실\n20㎡"
+            serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
+            priceLabel.text = "1박 130,300원"
+        case "Standard Double Room":
+            imageView.image = UIImage(named: "doubleRoomImage")
+            roomInfoLabel.text = "Standard Double Room\n기준 2인 / 최대 3인\n더블 침대 1개\n금연객실\n25㎡"
+            serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
+            priceLabel.text = "1박 130,300원"
+        case "Standard Queen Room":
+            imageView.image = UIImage(named: "queenRoomImage")
+            roomInfoLabel.text = "Standard Queen Room\n기준 2인 / 최대 3인\n퀸 침대 1개\n금연객실\n30㎡"
+            serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
+            priceLabel.text = "1박 130,300원"
+        case "Deluxe Single Room":
+            imageView.image = UIImage(named: "singleRoomImage")
+            roomInfoLabel.text = "Deluxe Single Room\n기준 1인 / 최대 2인\n싱글 침대 1개\n금연객실\n20㎡"
+            serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
+            priceLabel.text = "1박 160,300원"
+        case "Deluxe Double Room":
+            imageView.image = UIImage(named: "doubleRoomImage")
+            roomInfoLabel.text = "Deluxe Double Room\n기준 2인 / 최대 3인\n더블 침대 1개\n금연객실\n25㎡"
+            serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
+            priceLabel.text = "1박 160,300원"
+        case "Deluxe Queen Room":
+            imageView.image = UIImage(named: "queenRoomImage")
+            roomInfoLabel.text = "Deluxe Queen Room\n기준 2인 / 최대 3인\n퀸 침대 1개\n금연객실\n30㎡"
+            serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
+            priceLabel.text = "1박 160,300원"
+        case "Sweet Single Room":
+            imageView.image = UIImage(named: "singleRoomImage")
+            roomInfoLabel.text = "Sweet Single Room\n기준 1인 / 최대 2인\n싱글 침대 1개\n금연객실\n20㎡"
+            serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
+            priceLabel.text = "1박 190,300원"
+        case "Sweet Double Room":
+            imageView.image = UIImage(named: "doubleRoomImage")
+            roomInfoLabel.text = "Sweet Double Room\n기준 2인 / 최대 3인\n더블 침대 1개\n금연객실\n25㎡"
+            serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
+            priceLabel.text = "1박 190,300원"
+        case "Sweet Queen Room":
+            imageView.image = UIImage(named: "queenRoomImage")
+            roomInfoLabel.text = "Sweet Queen Room\n기준 2인 / 최대 3인\n퀸 침대 1개\n금연객실\n30㎡"
+            serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
+            priceLabel.text = "1박 190,300원"
+        case "Family Single Room":
+            imageView.image = UIImage(named: "singleRoomImage")
+            roomInfoLabel.text = "Family Single Room\n기준 1인 / 최대 2인\n싱글 침대 1개\n금연객실\n20㎡"
+            serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
+            priceLabel.text = "1박 240,300원"
+        case "Family Double Room":
+            imageView.image = UIImage(named: "doubleRoomImage")
+            roomInfoLabel.text = "Family Double Room\n기준 2인 / 최대 3인\n더블 침대 1개\n금연객실\n25㎡"
+            serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
+            priceLabel.text = "1박 240,300원"
+        case "Family Queen Room":
+            imageView.image = UIImage(named: "queenRoomImage")
+            roomInfoLabel.text = "Family Queen Room\n기준 2인 / 최대 3인\n퀸 침대 1개\n금연객실\n30㎡"
+            serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
+            priceLabel.text = "1박 240,300원"
+        default:
+            imageView.image = nil
+            roomInfoLabel.text = ""
+            serviceInfoLabel.text = ""
+            priceLabel.text = ""
+        }
+        
         roomInfoLabel.numberOfLines = 0
         roomInfoLabel.translatesAutoresizingMaskIntoConstraints = false
-        detailStackView.addSubview(roomInfoLabel)
         
-        // Service Info Label
-        let serviceInfoLabel = UILabel()
-        serviceInfoLabel.text = "주요 서비스 및 편의시설\n무료 와이파이"
         serviceInfoLabel.numberOfLines = 0
         serviceInfoLabel.translatesAutoresizingMaskIntoConstraints = false
-        detailStackView.addSubview(serviceInfoLabel)
         
-        // Price Label
-        let priceLabel = UILabel()
-        priceLabel.text = "34% 726,000원\n472,200원"
         priceLabel.numberOfLines = 0
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
-        detailStackView.addSubview(priceLabel)
         
-        // Payment Button
         let paymentButton = UIButton(type: .system)
         paymentButton.setTitle("결제하기", for: .normal)
         paymentButton.titleLabel?.font = UIFont.systemFont(ofSize: 18)
         paymentButton.backgroundColor = .lightGray
         paymentButton.translatesAutoresizingMaskIntoConstraints = false
-        detailStackView.addSubview(paymentButton)
         
-        // Constraints
-        NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: detailView.topAnchor, constant: 20),
-            imageView.leadingAnchor.constraint(equalTo: detailView.leadingAnchor, constant: 20),
-            imageView.trailingAnchor.constraint(equalTo: detailView.trailingAnchor, constant: -20),
-            imageView.heightAnchor.constraint(equalToConstant: 200),
-            
-            roomInfoLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
-            roomInfoLabel.leadingAnchor.constraint(equalTo: detailView.leadingAnchor, constant: 20),
-            roomInfoLabel.trailingAnchor.constraint(equalTo: detailView.trailingAnchor, constant: -20),
-            
-            serviceInfoLabel.topAnchor.constraint(equalTo: roomInfoLabel.bottomAnchor, constant: 20),
-            serviceInfoLabel.leadingAnchor.constraint(equalTo: detailView.leadingAnchor, constant: 20),
-            serviceInfoLabel.trailingAnchor.constraint(equalTo: detailView.trailingAnchor, constant: -20),
-            
-            priceLabel.topAnchor.constraint(equalTo: serviceInfoLabel.bottomAnchor, constant: 20),
-            priceLabel.leadingAnchor.constraint(equalTo: detailView.leadingAnchor, constant: 20),
-            priceLabel.trailingAnchor.constraint(equalTo: detailView.trailingAnchor, constant: -20),
-            
-            paymentButton.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 20),
-            paymentButton.centerXAnchor.constraint(equalTo: detailView.centerXAnchor),
-            paymentButton.widthAnchor.constraint(equalToConstant: 100),
-            paymentButton.heightAnchor.constraint(equalToConstant: 50),
-        ])
+        infoStackView.addArrangedSubview(roomInfoLabel)
+        infoStackView.addArrangedSubview(serviceInfoLabel)
+        infoStackView.addArrangedSubview(priceLabel)
+        infoStackView.addArrangedSubview(paymentButton)
         
+        detailStackView.addArrangedSubview(imageView)
+        detailStackView.addArrangedSubview(infoStackView)
+        
+        return detailStackView
+    }
+    
+    // 객실 상세
+    func createDetailView() -> UIView {
+        let detailView = UIView()
+        detailView.translatesAutoresizingMaskIntoConstraints = false
         return detailView
     }
 }
